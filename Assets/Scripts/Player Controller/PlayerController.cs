@@ -5,17 +5,17 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    bool isMoveForward = false, isMoveBackward = false, isKicking = false, isPunching = false, isDefending = false;
+    [HideInInspector] public bool isMoveForward = false, isMoveBackward = false, isKicking = false, isPunching = false, isDefending = false;
 
     private Animator animator;
-    private NetworkServer networkserver;
-    private NetworkClient networkClient;
-
-    [HideInInspector] public bool isServer;
+   
     [SerializeField] private Text playerName;
     [SerializeField] private Slider healthSlider;
-    [HideInInspector] public int health;
+    [HideInInspector] private int health = 100;
 
+    [HideInInspector] public bool isAttacking;
+    [SerializeField] private PlayerAIController opponentController;
+    [SerializeField] private PlayerAIController2 opponentController2;
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -23,8 +23,6 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        networkserver = FindObjectOfType<NetworkServer>();
-        isServer = networkserver.isServer;
     }
 
     // Update is called once per frame
@@ -49,19 +47,35 @@ public class PlayerController : MonoBehaviour
             isMoveBackward = false;
 
         if (Input.GetKeyDown(KeyCode.J))
+        {
             isKicking = true;
+            isAttacking = true;
+        }
         if (Input.GetKeyUp(KeyCode.J))
+        {
             isKicking = false;
+            isAttacking = false;
+        }
 
         if (Input.GetKeyDown(KeyCode.K))
+        {
             isDefending = true;
+        }
         if (Input.GetKeyUp(KeyCode.K))
+        {
             isDefending = false;
+        }
 
         if (Input.GetKeyDown(KeyCode.L))
+        {
             isPunching = true;
+            isAttacking = true;
+        }
         if (Input.GetKeyUp(KeyCode.L))
+        {
             isPunching = false;
+            isAttacking = false;
+        }
     }
 
     void HandleAnimation()
@@ -95,62 +109,59 @@ public class PlayerController : MonoBehaviour
     public void MoveForward()
     {
         animator.SetTrigger("MoveForward");
-        if (isServer)
-            networkserver.SendUDPMessageToClient("MoveForward");
-        else
-            networkClient.SendUDPMessageToServer("MoveForward");
     }
 
     public void MoveBackward()
     {
         animator.SetTrigger("MoveBackward");
-        if (isServer)
-            networkserver.SendUDPMessageToClient("MoveBackward");
-        else
-            networkClient.SendUDPMessageToServer("MoveBackward");
     }
 
     public void Kick()
     {
         animator.SetTrigger("Kick");
-        if (isServer)
-            networkserver.SendUDPMessageToClient("Kick");
-        else
-            networkClient.SendUDPMessageToServer("kick");
     }
 
     public void Punch()
     {
         animator.SetTrigger("Punch");
-        if (isServer)
-            networkserver.SendUDPMessageToClient("Punch");
-        else
-            networkClient.SendUDPMessageToServer("Punch");
     }
 
     public void Defend()
     {
         animator.SetTrigger("Defend");
-        if (isServer)
-            networkserver.SendUDPMessageToClient("Defend");
-        else
-            networkClient.SendUDPMessageToServer("Defend");
     }
 
-    private void OnCollisionEnter(Collision collision)
+    public void Win()
     {
-        if(collision.gameObject.tag == "Opponent")
+        animator.SetTrigger("Win");
+    }
+
+    public void Lose()
+    {
+        animator.SetTrigger("Lose");
+    }
+
+
+    public void CollisionDetected(GameObject collision)
+    {
+        if (collision.gameObject.tag == "Opponent")
         {
-            if(!isDefending)
+            if (!isDefending && !isAttacking && (opponentController.isAttacking || opponentController2.isAttacking))
             {
-                health -= 50;
+                health -= 10;
                 healthSlider.value = health;
-                if (isServer)
-                    networkserver.SendUDPMessageToClient("Hit");
-                else
-                    networkClient.SendUDPMessageToServer("Hit");
+                if(health <= 0)
+                {
+                    if(opponentController != null && opponentController.isActiveAndEnabled)
+                        opponentController.Win();
+                    if(opponentController2 != null && opponentController2.isActiveAndEnabled)
+                        opponentController2.Win();
+                    Lose();
+                }
+
             }
-            
-        }    
+
+        }
+        //Debug.Log(collision.gameObject.name + " : " + health);
     }
 }

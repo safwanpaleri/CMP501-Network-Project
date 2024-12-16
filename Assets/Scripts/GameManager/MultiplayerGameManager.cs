@@ -31,7 +31,7 @@ public class MultiplayerGameManager : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(playerController.health < 0 || multiplayerController.health < 0)
+        if(multiplayerController.health < 0)
         {
             Debug.Log("GameOver");
         }
