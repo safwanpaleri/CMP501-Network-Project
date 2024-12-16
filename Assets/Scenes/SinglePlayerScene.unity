@@ -1712,7 +1712,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Player Name
+  m_Text: Player
 --- !u!222 &1336619636
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2034,7 +2034,7 @@ GameObject:
   - component: {fileID: 1693371824}
   - component: {fileID: 1693371825}
   m_Layer: 0
-  m_Name: Multiplayer Game Manager
+  m_Name: SinglePlayer Game Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2062,15 +2062,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1693371823}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a329314b7cc23d4468b7d095ea666027, type: 3}
+  m_Script: {fileID: 11500000, guid: 4ef1fa700c819494e820d523f89a74b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MobileControls: {fileID: 101228875}
-  timerText: {fileID: 2022354371}
-  playerController: {fileID: 0}
-  multiplayerController: {fileID: 0}
+  timer: {fileID: 2022354371}
 --- !u!1 &1704377787
 GameObject:
   m_ObjectHideFlags: 0
@@ -2177,7 +2174,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Player Name 2
+  m_Text: AI
 --- !u!222 &1825769641
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3628,7 +3625,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3b930c2815b48243b819c5bf343b6af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parent: {fileID: 0}
+  parent: {fileID: 95000013349379791}
   parent1: {fileID: 95000013349379790}
   parent2: {fileID: 0}
 --- !u!54 &4000008926738305
@@ -3881,7 +3878,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3b930c2815b48243b819c5bf343b6af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parent: {fileID: 0}
+  parent: {fileID: 95000013349379791}
   parent1: {fileID: 95000013349379790}
   parent2: {fileID: 0}
 --- !u!4 &4000010526809323
@@ -4331,7 +4328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3b930c2815b48243b819c5bf343b6af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parent: {fileID: 0}
+  parent: {fileID: 95000013349379791}
   parent1: {fileID: 95000013349379790}
   parent2: {fileID: 0}
 --- !u!4 &4000011876082077
@@ -4555,7 +4552,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3b930c2815b48243b819c5bf343b6af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parent: {fileID: 0}
+  parent: {fileID: 95000013349379791}
   parent1: {fileID: 95000013349379790}
   parent2: {fileID: 0}
 --- !u!54 &4000012933703269
@@ -4981,7 +4978,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000013954578894}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e87c8dc7fcc1b2b49bddd073dfb19a5d, type: 3}
   m_Name: 
@@ -5002,7 +4999,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000013954578894}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 458852d0140cdb54086391f095cc767a, type: 3}
   m_Name: 

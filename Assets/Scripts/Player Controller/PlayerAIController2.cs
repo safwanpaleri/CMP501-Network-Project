@@ -117,7 +117,7 @@ public class PlayerAIController2 : MonoBehaviour
     // Bayesian Probability Computation
     float PunchingProbability(string health, string distance, string playerAction)
     {
-        if (distance == "Close" && playerAction != "Defending")
+        if (distance == "Close")
             return health == "High" ? 0.8f : health == "Medium" ? 0.5f : 0.3f;
         return 0.1f;
     }

@@ -481,6 +481,7 @@
 "Assets/Scripts/FuzzyLogicLibrary/Rules/Rule.cs"
 "Assets/Scripts/FuzzyLogicLibrary/Variables/LinguisticVariable.cs"
 "Assets/Scripts/GameManager/MultiplayerGameManager.cs"
+"Assets/Scripts/GameManager/SinglePlayerGameManager.cs"
 "Assets/Scripts/Network/NetworkClient.cs"
 "Assets/Scripts/Network/NetworkServer.cs"
 "Assets/Scripts/Player Controller/PlayerAIController.cs"

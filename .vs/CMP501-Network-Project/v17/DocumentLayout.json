@@ -3,16 +3,20 @@
   "WorkspaceRootPath": "D:\\Abertay\\CMP-501--Networking\\Networking Project\\CMP501-Network-Project\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{386EDB10-D047-8C28-DE86-83264E0158E6}|Assembly-CSharp.csproj|d:\\abertay\\cmp-501--networking\\networking project\\cmp501-network-project\\assets\\scripts\\player controller\\playeraicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{386EDB10-D047-8C28-DE86-83264E0158E6}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\player controller\\playeraicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{386EDB10-D047-8C28-DE86-83264E0158E6}|Assembly-CSharp.csproj|D:\\Abertay\\CMP-501--Networking\\Networking Project\\CMP501-Network-Project\\assets\\scripts\\player controller\\playeraicontroller2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{386EDB10-D047-8C28-DE86-83264E0158E6}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\player controller\\playeraicontroller2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{386EDB10-D047-8C28-DE86-83264E0158E6}|Assembly-CSharp.csproj|D:\\Abertay\\CMP-501--Networking\\Networking Project\\CMP501-Network-Project\\assets\\scripts\\player controller\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{386EDB10-D047-8C28-DE86-83264E0158E6}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\player controller\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{386EDB10-D047-8C28-DE86-83264E0158E6}|Assembly-CSharp.csproj|d:\\abertay\\cmp-501--networking\\networking project\\cmp501-network-project\\assets\\scripts\\player controller\\playeraicontroller2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{386EDB10-D047-8C28-DE86-83264E0158E6}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\player controller\\playeraicontroller2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{386EDB10-D047-8C28-DE86-83264E0158E6}|Assembly-CSharp.csproj|d:\\abertay\\cmp-501--networking\\networking project\\cmp501-network-project\\assets\\scripts\\player controller\\playeraicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{386EDB10-D047-8C28-DE86-83264E0158E6}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\player controller\\playeraicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{386EDB10-D047-8C28-DE86-83264E0158E6}|Assembly-CSharp.csproj|d:\\abertay\\cmp-501--networking\\networking project\\cmp501-network-project\\assets\\scripts\\gamemanager\\singleplayergamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{386EDB10-D047-8C28-DE86-83264E0158E6}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gamemanager\\singleplayergamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{386EDB10-D047-8C28-DE86-83264E0158E6}|Assembly-CSharp.csproj|D:\\Abertay\\CMP-501--Networking\\Networking Project\\CMP501-Network-Project\\assets\\scripts\\utilities\\childcollisiondetection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -31,41 +35,55 @@
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "PlayerAIController2.cs",
-              "DocumentMoniker": "D:\\Abertay\\CMP-501--Networking\\Networking Project\\CMP501-Network-Project\\Assets\\Scripts\\Player Controller\\PlayerAIController2.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Player Controller\\PlayerAIController2.cs",
-              "ToolTip": "D:\\Abertay\\CMP-501--Networking\\Networking Project\\CMP501-Network-Project\\Assets\\Scripts\\Player Controller\\PlayerAIController2.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Player Controller\\PlayerAIController2.cs",
-              "ViewState": "AQIAAA8AAABAMzMzMzMvwCQAAAAWAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-15T17:57:08.775Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
               "Title": "PlayerAIController.cs",
               "DocumentMoniker": "D:\\Abertay\\CMP-501--Networking\\Networking Project\\CMP501-Network-Project\\Assets\\Scripts\\Player Controller\\PlayerAIController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Player Controller\\PlayerAIController.cs",
               "ToolTip": "D:\\Abertay\\CMP-501--Networking\\Networking Project\\CMP501-Network-Project\\Assets\\Scripts\\Player Controller\\PlayerAIController.cs",
               "RelativeToolTip": "Assets\\Scripts\\Player Controller\\PlayerAIController.cs",
-              "ViewState": "AQIAANkAAAAA8P/////3v+QAAAAFAAAA",
+              "ViewState": "AQIAANMAAAAAhJmZmZnpv/gAAAAJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-28T10:18:32.875Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "PlayerAIController2.cs",
+              "DocumentMoniker": "D:\\Abertay\\CMP-501--Networking\\Networking Project\\CMP501-Network-Project\\Assets\\Scripts\\Player Controller\\PlayerAIController2.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Player Controller\\PlayerAIController2.cs",
+              "ToolTip": "D:\\Abertay\\CMP-501--Networking\\Networking Project\\CMP501-Network-Project\\Assets\\Scripts\\Player Controller\\PlayerAIController2.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Player Controller\\PlayerAIController2.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAC0AAAAiAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-15T17:57:08.775Z",
+              "IsPinned": true,
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "SinglePlayerGameManager.cs",
+              "DocumentMoniker": "D:\\Abertay\\CMP-501--Networking\\Networking Project\\CMP501-Network-Project\\Assets\\Scripts\\GameManager\\SinglePlayerGameManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\GameManager\\SinglePlayerGameManager.cs",
+              "ToolTip": "D:\\Abertay\\CMP-501--Networking\\Networking Project\\CMP501-Network-Project\\Assets\\Scripts\\GameManager\\SinglePlayerGameManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\GameManager\\SinglePlayerGameManager.cs",
+              "ViewState": "AQIAAAQAAAAAMzMzMzMrwBYAAAAZAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-16T00:26:21.547Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "ChildCollisionDetection.cs",
               "DocumentMoniker": "D:\\Abertay\\CMP-501--Networking\\Networking Project\\CMP501-Network-Project\\Assets\\Scripts\\Utilities\\ChildCollisionDetection.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Utilities\\ChildCollisionDetection.cs",
               "ToolTip": "D:\\Abertay\\CMP-501--Networking\\Networking Project\\CMP501-Network-Project\\Assets\\Scripts\\Utilities\\ChildCollisionDetection.cs",
               "RelativeToolTip": "Assets\\Scripts\\Utilities\\ChildCollisionDetection.cs",
-              "ViewState": "AQIAAAQAAAAAMDMzMzPbvx0AAAAmAAAA",
+              "ViewState": "AQIAAAQAAADwW2ZmZmb2vxQAAAAYAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-14T23:04:11.573Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-14T23:04:11.573Z"
             },
             {
               "$type": "Document",
@@ -75,7 +93,7 @@
               "RelativeDocumentMoniker": "Assets\\Scripts\\Player Controller\\PlayerController.cs",
               "ToolTip": "D:\\Abertay\\CMP-501--Networking\\Networking Project\\CMP501-Network-Project\\Assets\\Scripts\\Player Controller\\PlayerController.cs",
               "RelativeToolTip": "Assets\\Scripts\\Player Controller\\PlayerController.cs",
-              "ViewState": "AQIAAIoAAAAAAAAAAIAywJQAAAAtAAAA",
+              "ViewState": "AQIAADwAAAAAzszMzMwHwEEAAAAXAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-22T18:20:15.303Z",
               "EditorCaption": ""

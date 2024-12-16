@@ -92,6 +92,7 @@
     <Compile Include="Assets\Scripts\FuzzyLogicLibrary\MembershipFunctions\TriangleMembershipFunction.cs" />
     <Compile Include="Assets\Scripts\FuzzyLogicLibrary\Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Assets\ML-Agents\Examples\3DBall\Scripts\Ball3DHardAgent.cs" />
+    <Compile Include="Assets\Scripts\GameManager\SinglePlayerGameManager.cs" />
     <Compile Include="Assets\Scripts\FuzzyLogicLibrary\Interfaces\IFuzzyRuleToken.cs" />
     <Compile Include="Assets\Scripts\FuzzyLogicLibrary\Extensions\ObjectExtensions.cs" />
     <Compile Include="Assets\ML-Agents\Examples\SharedAssets\Scripts\DirectionIndicator.cs" />

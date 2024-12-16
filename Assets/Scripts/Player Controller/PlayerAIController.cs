@@ -237,12 +237,15 @@ public class PlayerAIController : MonoBehaviour
             {
                 health -= 5;
                 healthSlider.value = health;
-                if(playerController != null)
-                    playerController.Win();
-                Lose();
+                if (health <= 0)
+                {
+                    if (playerController != null)
+                        playerController.Win();
+                    Lose();
+                }
+                
             }
            
         }
-        Debug.Log("collided:");
     }
 }
