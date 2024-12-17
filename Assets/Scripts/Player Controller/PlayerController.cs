@@ -11,11 +11,13 @@ public class PlayerController : MonoBehaviour
    
     [SerializeField] private Text playerName;
     [SerializeField] private Slider healthSlider;
-    [HideInInspector] private int health = 100;
+    [HideInInspector] public int health = 100;
 
     [HideInInspector] public bool isAttacking;
     [SerializeField] private PlayerAIController opponentController;
     [SerializeField] private PlayerAIController2 opponentController2;
+    [SerializeField] private PlayerMultiplayerController playerMultiplayerController;
+    [SerializeField] private SinglePlayerGameManager gameManager;
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -134,11 +136,13 @@ public class PlayerController : MonoBehaviour
     public void Win()
     {
         animator.SetTrigger("Win");
+        gameManager.GameEnded("Win");
     }
 
     public void Lose()
     {
         animator.SetTrigger("Lose");
+        gameManager.GameEnded("Lose");
     }
 
 
@@ -156,6 +160,8 @@ public class PlayerController : MonoBehaviour
                         opponentController.Win();
                     if(opponentController2 != null && opponentController2.isActiveAndEnabled)
                         opponentController2.Win();
+                    if (playerMultiplayerController != null && playerMultiplayerController.isActiveAndEnabled)
+                        playerMultiplayerController.Win();
                     Lose();
                 }
 

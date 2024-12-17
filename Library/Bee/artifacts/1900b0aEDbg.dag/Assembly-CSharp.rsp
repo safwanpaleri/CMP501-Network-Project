@@ -480,6 +480,7 @@
 "Assets/Scripts/FuzzyLogicLibrary/Rules/Premise.cs"
 "Assets/Scripts/FuzzyLogicLibrary/Rules/Rule.cs"
 "Assets/Scripts/FuzzyLogicLibrary/Variables/LinguisticVariable.cs"
+"Assets/Scripts/GameManager/MenuManager.cs"
 "Assets/Scripts/GameManager/MultiplayerGameManager.cs"
 "Assets/Scripts/GameManager/SinglePlayerGameManager.cs"
 "Assets/Scripts/Network/NetworkClient.cs"
@@ -487,6 +488,7 @@
 "Assets/Scripts/Player Controller/PlayerAIController.cs"
 "Assets/Scripts/Player Controller/PlayerAIController2.cs"
 "Assets/Scripts/Player Controller/PlayerController.cs"
+"Assets/Scripts/Player Controller/PlayerController2.cs"
 "Assets/Scripts/Player Controller/PlayerMultiplayerController.cs"
 "Assets/Scripts/Utilities/ChildCollisionDetection.cs"
 -langversion:9.0

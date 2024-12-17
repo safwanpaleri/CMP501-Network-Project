@@ -16,6 +16,10 @@ public class NetworkServer : MonoBehaviour
     private NetworkStream stream;
     [HideInInspector] public bool isServer = false;
     [HideInInspector] public PlayerMultiplayerController playerMultiplayerController;
+    [HideInInspector] public PlayerController2 playerController;
+    [HideInInspector] public PlayerAIController playerAiController;
+    [HideInInspector] public MultiplayerGameManager multiplayerGameManager;
+
 
     [HideInInspector] public int port = 7777;
     [HideInInspector] public int port2 = 5001;
@@ -27,7 +31,17 @@ public class NetworkServer : MonoBehaviour
     [SerializeField] private Text codeText;
 
     [SerializeField] private FirebaseManager firebaseManager;
-    
+
+    [System.Serializable]
+    public class MessageData
+    {
+        public Vector3 playerPosition;
+        public int heatlth;
+    }
+
+    float TDPMessageTimer = 0;
+    float UDPMessageTimer = 0;
+
     private void Awake()
     {
         instance = this;
@@ -57,6 +71,9 @@ public class NetworkServer : MonoBehaviour
             createServerUI.SetActive(false);
             sendMessageUI.SetActive(true);
             RecieveUDPMessage();
+            StartCoroutine(SendTDPMessages());
+            StartCoroutine(MessageTimer());
+            ReceiveTDPMessage();
             isServer = true;
             SceneManager.LoadScene(1);
         }
@@ -66,7 +83,7 @@ public class NetworkServer : MonoBehaviour
         }
     }
 
-    public void SendMessageToClient()
+    public void SendTDPMessageToClient(string message)
     {
         try
         {
@@ -75,7 +92,7 @@ public class NetworkServer : MonoBehaviour
                 NetworkStream stream = tcpClient.GetStream();
                 if (stream != null && stream.CanWrite)
                 {
-                    byte[] messageBytes = System.Text.Encoding.UTF8.GetBytes(messageField.text);
+                    byte[] messageBytes = System.Text.Encoding.UTF8.GetBytes(message);
                     stream.Write(messageBytes, 0, messageBytes.Length);
                     Debug.Log("Message sent");
                 }
@@ -131,18 +148,41 @@ public class NetworkServer : MonoBehaviour
                     // Decode the received message
                     string receivedMessage = Encoding.UTF8.GetString(result.Buffer);
                     //Debug.Log($"Received message from {result.RemoteEndPoint.Address}:{result.RemoteEndPoint.Port} - {receivedMessage}");
-                    if (playerMultiplayerController != null)
+                    if (receivedMessage.Contains("PlayerMovement"))
                     {
-                        playerMultiplayerController.HandleAnimation(receivedMessage);
-                        Debug.Log("received Message: " + receivedMessage);
-
-                        if(receivedMessage == "Hit")
-                        {
-                            playerMultiplayerController.TakeDamage();
-                        }
+                        var messages = receivedMessage.Split(':');
+                        if (messages[1] == "MoveForward")
+                            playerController.MoveForward();
+                        else if (messages[1] == "MoveBackward")
+                            playerController.MoveBackward();
+                        else if (messages[1] == "Punch")
+                            playerController.Punch();
+                        else if (messages[1] == "Kick")
+                            playerController.Kick();
+                        else
+                            playerController.Defend();
                     }
                     else
-                        Debug.LogError("player multiplayer controller is null");
+                    {
+                        if (playerMultiplayerController != null)
+                        {
+
+                            Debug.Log("received Message: " + receivedMessage);
+
+                            if (receivedMessage == "Hit")
+                            {
+                                playerMultiplayerController.TakeDamage();
+                            }
+                            else
+                            {
+                                playerMultiplayerController.HandleAnimation(receivedMessage);
+                            }
+                        }
+                        else
+                            Debug.LogError("player multiplayer controller is null");
+                    }
+
+                    UDPMessageTimer = 0;
                 }
             }
             catch (Exception e)
@@ -168,6 +208,107 @@ public class NetworkServer : MonoBehaviour
             result[i] = characters[UnityEngine.Random.Range(0,characters.Length)];
         }
         return new string(result);
+    }
+
+    public void StartTDPVerifications()
+    {
+        StartCoroutine(SendTDPMessages());
+    }
+
+    public IEnumerator SendTDPMessages()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(1f);
+            if (playerController != null)
+            {
+                MessageData messageData = new MessageData();
+                messageData.playerPosition = playerController.gameObject.transform.position;
+                messageData.heatlth = playerController.health;
+
+                var jsonData = JsonUtility.ToJson(messageData);
+
+                SendTDPMessageToClient(jsonData);
+            }
+        }
+    }
+
+    public async void ReceiveTDPMessage()
+    {
+        try
+        {
+            while(true)
+            {
+                if (tcpClient != null && tcpClient.Connected)
+                {
+                    NetworkStream stream = tcpClient.GetStream();
+                    if (stream != null && stream.CanRead)
+                    {
+                        byte[] buffer = new byte[1024]; // Adjust size as needed
+                        int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+
+                        if (bytesRead > 0)
+                        {
+                            string receivedMessage = System.Text.Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                            MessageData messageData;
+                            messageData = JsonUtility.FromJson<MessageData>(receivedMessage);
+                            playerMultiplayerController.VerficationAndActions(messageData.playerPosition, messageData.heatlth);
+                            //Debug.LogWarning("Server TDP Message: " + receivedMessage);
+                            TDPMessageTimer = 0;
+                        }
+                        else
+                        {
+                            //Debug.LogWarning("No data received, the server might have closed the connection.");
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("Cannot read from the stream.");
+                    }
+                }
+                else
+                {
+                    Debug.LogError("No connected server.");
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Error receiving message: " + e.Message);
+        }
+    }
+
+    private IEnumerator MessageTimer()
+    {
+        while(true)
+        {
+            yield return new WaitForSeconds(1f);
+            TDPMessageTimer++;
+            UDPMessageTimer++;
+
+            if (TDPMessageTimer > 10)
+            {
+                Debug.LogWarning("Last Message recieved 10 seconds ago");
+                playerMultiplayerController.Lose();
+                playerController.Lose();
+                multiplayerGameManager.GameEnded("Draw");
+                TDPMessageTimer = 0;
+            }
+
+            if (UDPMessageTimer > 15)
+            {
+                Debug.LogWarning("Last Message recieved 10 seconds ago");
+                var prediction = playerAiController.GetASingleReaction();
+                Debug.LogWarning("Prediction: " + prediction);
+                playerMultiplayerController.HandleAnimation(prediction);
+                SendUDPMessageToClient("PlayerMovement:" + prediction);
+                UDPMessageTimer = 0;
+            }
+
+            if (multiplayerGameManager != null && multiplayerGameManager.isGameEnded)
+                break;
+        }
+
     }
 
     private void OnApplicationQuit()

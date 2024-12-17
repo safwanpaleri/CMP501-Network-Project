@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class PlayerAIController : MonoBehaviour
 {
     private Animator animator;
-    private PlayerController playerController;
+    private PlayerController2 playerController;
     [SerializeField] private Text playerName;
     [SerializeField] private Slider healthSlider;
     [HideInInspector] public bool isDefending = false;
@@ -26,6 +26,22 @@ public class PlayerAIController : MonoBehaviour
     public enum Difficulty { Easy, Medium, Hard }
     public Difficulty difficulty = Difficulty.Medium;
 
+    float distance;
+    float distanceClose;
+    float distanceMedium;
+    float distanceFar;
+
+    float healthLow;
+    float healthHigh;
+
+    // Fuzzy rules for actions
+    float punchConfidence;
+    float kickConfidence;
+    float defendConfidence;
+    float moveForwardConfidence;
+    float moveBackwardConfidence;
+    float rand;
+
     private float reactionTime = 0.2f;
     private float probabilty = 0.5f;
 
@@ -33,8 +49,8 @@ public class PlayerAIController : MonoBehaviour
     private void Start()
     {
         animator = GetComponent<Animator>();
-        playerController = player.GetComponent<PlayerController>();
-        StartCoroutine(Reaction());
+        playerController = player.GetComponent<PlayerController2>();
+        //StartCoroutine(Reaction());
     }
 
     void Update()
@@ -45,24 +61,24 @@ public class PlayerAIController : MonoBehaviour
 
     private IEnumerator Reaction()
     {
-        float distance = Vector3.Distance(transform.position, player.position);
-        Debug.LogWarning(distance);
-        float distanceClose = FuzzifyClose(distance);
-        float distanceMedium = FuzzifyMedium(distance);
-        float distanceFar = FuzzifyFar(distance);
+        distance = Vector3.Distance(transform.position, player.position);
+        //Debug.LogWarning(distance);
+        distanceClose = FuzzifyClose(distance);
+        distanceMedium = FuzzifyMedium(distance);
+        distanceFar = FuzzifyFar(distance);
 
-        float healthLow = FuzzifyLowHealth(health);
-        float healthHigh = FuzzifyHighHealth(health);
+        healthLow = FuzzifyLowHealth(health);
+        healthHigh = FuzzifyHighHealth(health);
 
         // Fuzzy rules for actions
-        float punchConfidence = FuzzyAnd(distanceClose, 1 - healthLow);
-        float kickConfidence = FuzzyAnd(distanceMedium, 1 - healthLow);
-        float defendConfidence = FuzzyAnd(PlayerIsAttacking(), 1);
-        float moveForwardConfidence = FuzzyAnd(distanceFar, healthHigh);
-        float moveBackwardConfidence = FuzzyAnd(distanceClose, healthLow);
-        float rand;
+        punchConfidence = FuzzyAnd(distanceClose, 1 - healthLow);
+        kickConfidence = FuzzyAnd(distanceMedium, 1 - healthLow);
+        defendConfidence = FuzzyAnd(PlayerIsAttacking(), 1);
+        moveForwardConfidence = FuzzyAnd(distanceFar, healthHigh);
+        moveBackwardConfidence = FuzzyAnd(distanceClose, healthLow);
+
         // Adjust decisions based on difficulty
-        AdjustForDifficulty(ref punchConfidence, ref kickConfidence, ref defendConfidence, ref moveForwardConfidence, ref moveBackwardConfidence);
+        //AdjustForDifficulty(ref punchConfidence, ref kickConfidence, ref defendConfidence, ref moveForwardConfidence, ref moveBackwardConfidence);
         
         if (playerController.isAttacking)
         {
@@ -247,5 +263,64 @@ public class PlayerAIController : MonoBehaviour
             }
            
         }
+    }
+
+    public string GetASingleReaction()
+    {
+        distance = Vector3.Distance(transform.position, player.position);
+        //Debug.LogWarning(distance);
+        distanceClose = FuzzifyClose(distance);
+        distanceMedium = FuzzifyMedium(distance);
+        distanceFar = FuzzifyFar(distance);
+
+        healthLow = FuzzifyLowHealth(health);
+        healthHigh = FuzzifyHighHealth(health);
+
+        // Fuzzy rules for actions
+        punchConfidence = FuzzyAnd(distanceClose, 1 - healthLow);
+        kickConfidence = FuzzyAnd(distanceMedium, 1 - healthLow);
+        defendConfidence = FuzzyAnd(PlayerIsAttacking(), 1);
+        moveForwardConfidence = FuzzyAnd(distanceFar, healthHigh);
+        moveBackwardConfidence = FuzzyAnd(distanceClose, healthLow);
+
+        // Adjust decisions based on difficulty
+        //AdjustForDifficulty(ref punchConfidence, ref kickConfidence, ref defendConfidence, ref moveForwardConfidence, ref moveBackwardConfidence);
+
+        if (playerController.isAttacking)
+        {
+            rand = (UnityEngine.Random.Range(0.0f, 1.0f));
+            if (rand > probabilty)
+                return "Defend";
+        }
+        // Choose action based on the highest confidence
+        else if (punchConfidence > kickConfidence && punchConfidence > defendConfidence &&
+            punchConfidence > moveForwardConfidence && punchConfidence > moveBackwardConfidence)
+        {
+            rand = (UnityEngine.Random.Range(0.0f, 1.0f));
+            if (rand > probabilty)
+                return "Punch";
+
+        }
+        else if (kickConfidence > defendConfidence && kickConfidence > moveForwardConfidence &&
+                 kickConfidence > moveBackwardConfidence)
+        {
+            rand = (UnityEngine.Random.Range(0.0f, 1.0f));
+            if (rand > probabilty)
+                return "Kick";
+        }
+        else if (moveForwardConfidence > moveBackwardConfidence)
+        {
+            rand = (UnityEngine.Random.Range(0.0f, 1.0f));
+            if (rand > probabilty)
+                return "MoveForward";
+        }
+        else
+        {
+            rand = (UnityEngine.Random.Range(0.0f, 1.0f));
+            if (rand > probabilty)
+               return "MoveBackward";
+        }
+
+        return "idle";
     }
 }

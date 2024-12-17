@@ -61,6 +61,7 @@
     <Analyzer Include="D:\Unity\Editors\2023.2.20f1-x86_64\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\GameManager\MenuManager.cs" />
     <Compile Include="Assets\Scripts\FuzzyLogicLibrary\InferenceEngines\FuzzyEngineFactory.cs" />
     <Compile Include="Assets\Scripts\FuzzyLogicLibrary\Rules\FuzzyRuleConditionConjunction.cs" />
     <Compile Include="Assets\Scripts\Firebase\FirebaseManager.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Assets\Scripts\FuzzyLogicLibrary\Defuzzification\CoGDefuzzification.cs" />
     <Compile Include="Assets\ML-Agents\Examples\SharedAssets\Scripts\CameraFollow.cs" />
     <Compile Include="Assets\ML-Agents\Examples\SharedAssets\Scripts\ModelOverrider.cs" />
+    <Compile Include="Assets\Scripts\Player Controller\PlayerController2.cs" />
     <Compile Include="Assets\Scripts\FuzzyLogicLibrary\Interfaces\IMembershipFunction.cs" />
     <Compile Include="Assets\Scripts\Player Controller\PlayerController.cs" />
     <Compile Include="Assets\ML-Agents\Examples\SharedAssets\Scripts\FlyCamera.cs" />
