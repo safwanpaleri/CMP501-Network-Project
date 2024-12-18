@@ -1314,6 +1314,10 @@
       <Project>{58C09887-7D87-8649-99F6-0EDE3F2BA8E2}</Project>
       <Name>Unity.ML-Agents.Editor</Name>
     </ProjectReference>
+    <ProjectReference Include="IngameDebugConsole.Runtime.csproj">
+      <Project>{8EECF0A3-8260-63E2-8ADF-31C15402AE9C}</Project>
+      <Name>IngameDebugConsole.Runtime</Name>
+    </ProjectReference>
     <ProjectReference Include="Unity.ML-Agents.Extensions.csproj">
       <Project>{1A30BA9A-DAB0-4863-B943-A1E238D3864D}</Project>
       <Name>Unity.ML-Agents.Extensions</Name>
@@ -1321,6 +1325,10 @@
     <ProjectReference Include="Unity.ML-Agents.Extensions.Editor.Input.csproj">
       <Project>{AF805892-90A6-B6D6-8061-48CD2DC5B64E}</Project>
       <Name>Unity.ML-Agents.Extensions.Editor.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="IngameDebugConsole.Editor.csproj">
+      <Project>{78DA5B04-02AD-ED63-4D7A-656738A533AA}</Project>
+      <Name>IngameDebugConsole.Editor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -4,8 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+//Script used for AI for the opponent in the SinglePlayer Game scene.
+//The technique used in this script is FuzzyLogic
 public class PlayerAIController : MonoBehaviour
 {
+    //Cache variables
     private Animator animator;
     private PlayerController2 playerController;
     [SerializeField] private Text playerName;
@@ -13,41 +16,38 @@ public class PlayerAIController : MonoBehaviour
     [HideInInspector] public bool isDefending = false;
     [HideInInspector] public bool isAttacking = false;
 
+    //variables
     public Transform player;
     public float health = 100f;
     public float punchRange = 1.5f;
     public float kickRange = 2.5f;
-    public float lowHealthThreshold = 30f;
-    public float moveSpeed = 2f;
+    public float lowHealth = 30f;
 
-    private string playerAction = "idle"; 
-
-    // Difficulty levels
     public enum Difficulty { Easy, Medium, Hard }
     public Difficulty difficulty = Difficulty.Medium;
 
+    //Logic check variables
     float distance;
     float distanceClose;
     float distanceMedium;
     float distanceFar;
-
     float healthLow;
     float healthHigh;
-
-    // Fuzzy rules for actions
-    float punchConfidence;
-    float kickConfidence;
-    float defendConfidence;
-    float moveForwardConfidence;
-    float moveBackwardConfidence;
+    float punchDecision;
+    float kickDecision;
+    float defendDecision;
+    float moveForwardDecision;
+    float moveBackwardDecision;
     float rand;
 
-    private float reactionTime = 0.2f;
-    private float probabilty = 0.5f;
+    //difficulty variables
+    private float reactionTime = 0.75f;
+    private float probabilty = 0.75f;
 
 
     private void Start()
     {
+        //getting references and saving to cache variables.
         animator = GetComponent<Animator>();
         playerController = player.GetComponent<PlayerController2>();
         //StartCoroutine(Reaction());
@@ -59,55 +59,66 @@ public class PlayerAIController : MonoBehaviour
         
     }
 
+    //Find appropriate action or reaction as the next movement 
     private IEnumerator Reaction()
     {
+        //Check Distance
         distance = Vector3.Distance(transform.position, player.position);
-        //Debug.LogWarning(distance);
-        distanceClose = FuzzifyClose(distance);
-        distanceMedium = FuzzifyMedium(distance);
-        distanceFar = FuzzifyFar(distance);
-
-        healthLow = FuzzifyLowHealth(health);
-        healthHigh = FuzzifyHighHealth(health);
-
-        // Fuzzy rules for actions
-        punchConfidence = FuzzyAnd(distanceClose, 1 - healthLow);
-        kickConfidence = FuzzyAnd(distanceMedium, 1 - healthLow);
-        defendConfidence = FuzzyAnd(PlayerIsAttacking(), 1);
-        moveForwardConfidence = FuzzyAnd(distanceFar, healthHigh);
-        moveBackwardConfidence = FuzzyAnd(distanceClose, healthLow);
-
-        // Adjust decisions based on difficulty
-        //AdjustForDifficulty(ref punchConfidence, ref kickConfidence, ref defendConfidence, ref moveForwardConfidence, ref moveBackwardConfidence);
         
+        distanceClose = PunchRangeCheck(distance);
+        distanceMedium = PunchOrKickCheck(distance);
+        distanceFar = KickRangeCheck(distance);
+
+        //Check health
+        healthLow = LowHealthCheck(health);
+        healthHigh = HighHealthCheck(health);
+
+
+        //Rule 1: if player is close and ai has low health, then punch.
+        punchDecision = CheckMin(distanceClose, 1 - healthLow);
+        //Rule2: if player is not in punch range but in kick range and ai in low health, then kick.
+        kickDecision = CheckMin(distanceMedium, 1 - healthLow);
+        //Rule 3: if player is attacking, then defend.
+        defendDecision = CheckMin(PlayerIsAttacking(), 1);
+        //Rule 4: if player is far and have high health,then move towards player.
+        moveForwardDecision = CheckMin(distanceFar, healthHigh);
+        //Rule 5: if player is close and ai has low health, then move backward.
+        moveBackwardDecision = CheckMin(distanceClose, healthLow);
+
+        //probabilty is a difficulty parameter, if the mode is easy less liketly to take decision.,
+        //if the mode is hard, then more likely to take decision.
+        //if player is attacking, then defend according to difficulty
         if (playerController.isAttacking)
         {
             rand = (UnityEngine.Random.Range(0.0f, 1.0f));
             if (rand > probabilty)
                 Defend();
         }
-        // Choose action based on the highest confidence
-        if (punchConfidence > kickConfidence && punchConfidence > defendConfidence &&
-            punchConfidence > moveForwardConfidence && punchConfidence > moveBackwardConfidence)
+        // if punch decision is greater than all other decisions then do punch.
+        if (punchDecision > kickDecision && punchDecision > defendDecision &&
+            punchDecision > moveForwardDecision && punchDecision > moveBackwardDecision)
         {
             rand = (UnityEngine.Random.Range(0.0f, 1.0f));
             if(rand > probabilty)
                 Punch();
             
         }
-        else if (kickConfidence > defendConfidence && kickConfidence > moveForwardConfidence &&
-                 kickConfidence > moveBackwardConfidence)
+        //if kick decision is greater than all other decisions then do punch
+        else if (kickDecision > defendDecision && kickDecision > moveForwardDecision &&
+                 kickDecision > moveBackwardDecision)
         {
             rand = (UnityEngine.Random.Range(0.0f, 1.0f));
             if (rand > probabilty)
                 Kick();
         }
-        else if (moveForwardConfidence > moveBackwardConfidence)
+        //if move forward decision is greater than all other decision then move forward
+        else if (moveForwardDecision > moveBackwardDecision)
         {
             rand = (UnityEngine.Random.Range(0.0f, 1.0f));
             if (rand > probabilty)
                 MoveForward();
         }
+        //if move backward decision is greater than all other decisions then move backwards.
         else
         {
             rand = (UnityEngine.Random.Range(0.0f, 1.0f));
@@ -115,81 +126,64 @@ public class PlayerAIController : MonoBehaviour
                 MoveBackward();
         }
 
+        //reaction time is also a difficulty paramater.
+        //it is the gap between an action to next. 
+        //so if the mode is easier, ai will take longer to take decision,
+        //as difficulty increases the reaction time decreases.
         yield return new WaitForSeconds(reactionTime);
 
         StartCoroutine(Reaction());
     }
 
-    // Fuzzy membership functions
-    float FuzzifyClose(float distance)
+    //Logic to check whether the ai is within the punch range.
+    //if the ai is within the range it will return 1 and if not it will return 0
+    float PunchRangeCheck(float distance)
     {
         return Mathf.Clamp01(1 - distance / punchRange);
     }
 
-    float FuzzifyMedium(float distance)
+    //Logic to determine whether the ai is within the punch range or kick range.
+    //if the ai is below the punch range it will return 0 and beyond kick range returns 1.
+    float PunchOrKickCheck(float distance)
     {
         return Mathf.Clamp01((distance - punchRange) / (kickRange - punchRange));
     }
 
-    float FuzzifyFar(float distance)
+    //Logic to check whether the ai is within the kick range.
+    //if the ai is below the range it will return 0 and if it is far then it will return 1.
+    float KickRangeCheck(float distance)
     {
         return Mathf.Clamp01((distance - kickRange) / kickRange);
     }
 
-    float FuzzifyLowHealth(float currentHealth)
+    //logic to check whether the ai has low health.
+    //if ai has health lower than great health it will return 0 and if it has low health it will return 1
+    float LowHealthCheck(float currentHealth)
     {
-        return Mathf.Clamp01(1 - currentHealth / lowHealthThreshold);
+        return Mathf.Clamp01(1 - currentHealth / lowHealth);
     }
 
-    float FuzzifyHighHealth(float currentHealth)
+    //logic to check whether the ai has high health
+    //if ai has great health return 1 and low health return 0
+    float HighHealthCheck(float currentHealth)
     {
-        return Mathf.Clamp01(currentHealth / lowHealthThreshold);
+        return Mathf.Clamp01(currentHealth / lowHealth);
     }
 
+    //Checking whether the player is attacking or not
+    //if attacking returns 1, else 0
     float PlayerIsAttacking()
     {
-        return playerAction == "punch" || playerAction == "kick" ? 1.0f : 0.0f;
+        return playerController.isAttacking ? 1.0f : 0.0f;
     }
 
-    // Fuzzy AND operator
-    float FuzzyAnd(float a, float b)
+    // Returns minimum or both float.
+    float CheckMin(float a, float b)
     {
         return Mathf.Min(a, b);
     }
-
-    // Difficulty adjustment
-    void AdjustForDifficulty(ref float punch, ref float kick, ref float defend, ref float moveForward, ref float moveBackward)
-    {
-        switch (difficulty)
-        {
-            case Difficulty.Easy:
-                reactionTime = 1.0f;
-                punch *= 0.7f; // Less aggressive
-                kick *= 0.7f;
-                defend *= 0.5f; // Less likely to defend
-                moveForward *= 1.2f; // More likely to move forward
-                moveBackward *= 0.8f; // Less likely to retreat
-                probabilty = 0.7f;
-                break;
-
-            case Difficulty.Medium:
-                // No change for medium
-                reactionTime = 0.5f;
-                probabilty = 0.5f;
-             
-                break;
-
-            case Difficulty.Hard:
-                reactionTime = 0.2f;
-                punch *= 1.2f; // More aggressive
-                kick *= 1.2f;
-                defend *= 1.5f; // More likely to defend
-                moveForward *= 0.8f; // Less likely to move forward unnecessarily
-                moveBackward *= 1.5f; // More likely to retreat when low health
-                probabilty = 0.2f;
-                break;
-        }
-    }
+    
+    //Animation functions
     public void MoveForward()
     {
         animator.SetTrigger("MoveForward");
@@ -222,6 +216,17 @@ public class PlayerAIController : MonoBehaviour
 
     }
 
+    public void Win()
+    {
+        animator.SetTrigger("Win");
+    }
+
+    public void Lose()
+    {
+        animator.SetTrigger("Lose");
+    }
+
+    //bool resetting coroutines
     private IEnumerator StopAttacking()
     {
         yield return new WaitForSeconds(0.25f);
@@ -234,19 +239,12 @@ public class PlayerAIController : MonoBehaviour
         isDefending = false;
     }
 
-    public void Win()
-    {
-        animator.SetTrigger("Win");
-    }
-
-    public void Lose()
-    {
-        animator.SetTrigger("Lose");
-    }
-
-
+    //Collision detection
     public void CollisionDetected(GameObject collision)
     {
+        //if the collided object is player and the ai is not defending and ai is not the one attacking
+        // and player is attacking (not just random collision) then decrease the health.
+        // if the health reaches 0 then send a confirmation to player and activate "Lose" Animation.
         if (collision.gameObject.tag == "Player")
         {
             if (!isDefending && !isAttacking && playerController.isAttacking)
@@ -265,26 +263,23 @@ public class PlayerAIController : MonoBehaviour
         }
     }
 
+    //Return next logical move as string,
+    //Utility function for other script to decide an action.
     public string GetASingleReaction()
     {
         distance = Vector3.Distance(transform.position, player.position);
-        //Debug.LogWarning(distance);
-        distanceClose = FuzzifyClose(distance);
-        distanceMedium = FuzzifyMedium(distance);
-        distanceFar = FuzzifyFar(distance);
+        distanceClose = PunchRangeCheck(distance);
+        distanceMedium = PunchOrKickCheck(distance);
+        distanceFar = KickRangeCheck(distance);
 
-        healthLow = FuzzifyLowHealth(health);
-        healthHigh = FuzzifyHighHealth(health);
+        healthLow = LowHealthCheck(health);
+        healthHigh = HighHealthCheck(health);
 
-        // Fuzzy rules for actions
-        punchConfidence = FuzzyAnd(distanceClose, 1 - healthLow);
-        kickConfidence = FuzzyAnd(distanceMedium, 1 - healthLow);
-        defendConfidence = FuzzyAnd(PlayerIsAttacking(), 1);
-        moveForwardConfidence = FuzzyAnd(distanceFar, healthHigh);
-        moveBackwardConfidence = FuzzyAnd(distanceClose, healthLow);
-
-        // Adjust decisions based on difficulty
-        //AdjustForDifficulty(ref punchConfidence, ref kickConfidence, ref defendConfidence, ref moveForwardConfidence, ref moveBackwardConfidence);
+        punchDecision = CheckMin(distanceClose, 1 - healthLow);
+        kickDecision = CheckMin(distanceMedium, 1 - healthLow);
+        defendDecision = CheckMin(PlayerIsAttacking(), 1);
+        moveForwardDecision = CheckMin(distanceFar, healthHigh);
+        moveBackwardDecision = CheckMin(distanceClose, healthLow);
 
         if (playerController.isAttacking)
         {
@@ -292,23 +287,22 @@ public class PlayerAIController : MonoBehaviour
             if (rand > probabilty)
                 return "Defend";
         }
-        // Choose action based on the highest confidence
-        else if (punchConfidence > kickConfidence && punchConfidence > defendConfidence &&
-            punchConfidence > moveForwardConfidence && punchConfidence > moveBackwardConfidence)
+        else if (punchDecision > kickDecision && punchDecision > defendDecision &&
+            punchDecision > moveForwardDecision && punchDecision > moveBackwardDecision)
         {
             rand = (UnityEngine.Random.Range(0.0f, 1.0f));
             if (rand > probabilty)
                 return "Punch";
 
         }
-        else if (kickConfidence > defendConfidence && kickConfidence > moveForwardConfidence &&
-                 kickConfidence > moveBackwardConfidence)
+        else if (kickDecision > defendDecision && kickDecision > moveForwardDecision &&
+                 kickDecision > moveBackwardDecision)
         {
             rand = (UnityEngine.Random.Range(0.0f, 1.0f));
             if (rand > probabilty)
                 return "Kick";
         }
-        else if (moveForwardConfidence > moveBackwardConfidence)
+        else if (moveForwardDecision > moveBackwardDecision)
         {
             rand = (UnityEngine.Random.Range(0.0f, 1.0f));
             if (rand > probabilty)

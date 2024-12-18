@@ -3,34 +3,44 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+//script that controls player in the multiplayer game scene
 public class PlayerController2 : MonoBehaviour
 {
-    [HideInInspector] public bool isMoveForward = false, isMoveBackward = false, isKicking = false, isPunching = false, isDefending = false;
+    //variables
+    [HideInInspector] public bool isMoveForward = false, isMoveBackward = false, isKicking = false, isPunching = false, isDefending = false, isAttacking = false;
 
+    //cache variables.
     private Animator animator;
 
     [SerializeField] private Text playerName;
     [SerializeField] private Slider healthSlider;
     [HideInInspector] public int health = 100;
 
-    [HideInInspector] public bool isAttacking;
+    //Helper scripts
     [SerializeField] private PlayerMultiplayerController playerMultiplayerController;
+    [SerializeField] private MultiplayerGameManager gameManager;
 
+    //Network Scripts
     private NetworkClient client;
     private NetworkServer server;
     bool isServer = false;
+
+    
     private void Awake()
     {
+        //getting and saving references
         animator = GetComponent<Animator>();
     }
     // Start is called before the first frame update
     void Start()
     {
+        //Getting networking script references
         client = FindObjectOfType<NetworkClient>();
         server = FindObjectOfType<NetworkServer>();
 
         if(server != null )
         {
+            //checking if the player is server.
             isServer = server.isServer;
         }
     }
@@ -38,10 +48,12 @@ public class PlayerController2 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Handle input and Animations
         HandleInput();
         HandleAnimation();
     }
 
+    //Function to handle input by keyboard.
     void HandleInput()
     {
         if (Input.GetKey(KeyCode.W))
@@ -88,6 +100,7 @@ public class PlayerController2 : MonoBehaviour
         }
     }
 
+    //function to handle animation and send action to client or server accordingly to reflect in that device.
     void HandleAnimation()
     {
         if (isMoveForward)
@@ -171,7 +184,8 @@ public class PlayerController2 : MonoBehaviour
         animator.SetTrigger("Lose");
     }
 
-
+    //Collision detection
+    //Send "Win" or "Lose" accordingly to trigger event over other device.
     public void CollisionDetected(GameObject collision)
     {
         if (collision.gameObject.tag == "Opponent")
@@ -188,20 +202,19 @@ public class PlayerController2 : MonoBehaviour
                 if (health <= 0)
                 {
                     if (playerMultiplayerController != null && playerMultiplayerController.isActiveAndEnabled)
+                    {
                         playerMultiplayerController.Win();
+                        if (isServer)
+                            server.SendUDPMessageToClient("Win");
+                        else
+                            client.SendUDPMessageToServer("Win");
+
+                        gameManager.GameEnded("Lose");
+                    }
 
                     Lose();
                 }
-                //Debug.LogWarning("Opponent Attacked");
             }
-            //Debug.LogWarning("Opponent attacking: " + playerMultiplayerController.isAttacking);
-            //Debug.LogWarning("collided 4");
         }
-        //Debug.LogWarning("collided 3");
-    }
-
-    public void GetPredictionMovement()
-    {
-
     }
 }

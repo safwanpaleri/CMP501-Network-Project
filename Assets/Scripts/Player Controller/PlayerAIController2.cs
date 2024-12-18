@@ -3,30 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+//Script used for AI for the opponent in the SinglePlayer Game scene.
+//The technique used in this script is Bayesian Network
 public class PlayerAIController2 : MonoBehaviour
 {
+    //Cache Variables
     private Animator animator;
     [SerializeField] private Text playerName;
     [SerializeField] private Slider healthSlider;
+    private PlayerController playerController;
 
-
+    //variables
     public Transform player;
     public float health = 100f;
     public float punchRange = 1.5f;
     public float kickRange = 2.5f;
-    public float intenseThreshold = 30f;
+    public float lowHealth = 30f;
 
 
     public enum Difficulty { Easy, Medium, Hard }
     public Difficulty difficulty = Difficulty.Medium;
 
-    private float reactionTime = 0.5f;
-    private float reactionprobability = 0.5f;
-    private PlayerController playerController;
+    //difficulty variables(changes according to difficulty)
+    private float reactionTime = 0.75f;
+    private float reactionprobability = 0.75f;
+    
 
-    private string healthState;
-    private string distanceState;
-    private string playerState;
+    //Logic check variables
+    private string healthStatus;
+    private string distance;
+    private string playerStatus;
     private float punchProbability;
     private float kickProbability;
     private float defendProbability;
@@ -38,24 +44,26 @@ public class PlayerAIController2 : MonoBehaviour
 
     private void Start()
     {
+        //getting references and saving to cache variables.
         animator = GetComponent<Animator>();
         playerController = player.GetComponent<PlayerController>();
         StartCoroutine(Reaction());
     }
 
+    //Find appropriate action or reaction as the next movement 
     private IEnumerator Reaction()
     {
-        // Get state variables
-        healthState = GetHealthStatus();
-        distanceState = GetDistanceStatusBetweenPlayerAndOpponent();
-        playerState = GetPlayerStatus();
+        // Get status
+        healthStatus = GetHealthStatus();
+        distance = GetDistanceBetweenPlayerAndAI();
+        playerStatus = GetPlayerStatus();
 
         // Compute probabilities for each action
-        punchProbability = PunchingProbability(healthState, distanceState, playerState);
-        kickProbability = KickingProbability(healthState, distanceState, playerState);
-        defendProbability = DefendingProbability(healthState, distanceState, playerController.isAttacking);
-        moveForwardProbability = MoveForwardProbability(healthState, distanceState, playerState);
-        moveBackwardProbability = MoveBackwardProbability(healthState, distanceState, playerState);
+        punchProbability = PunchingProbability(healthStatus, distance);
+        kickProbability = KickingProbability(healthStatus, distance);
+        defendProbability = DefendingProbability(healthStatus, distance, playerController.isAttacking);
+        moveForwardProbability = MoveForwardProbability(healthStatus, distance);
+        moveBackwardProbability = MoveBackwardProbability(healthStatus, distance);
 
         // Choose the action with the highest probability
         float maxProbability = Mathf.Max(punchProbability, kickProbability, defendProbability, moveForwardProbability, moveBackwardProbability);
@@ -88,22 +96,30 @@ public class PlayerAIController2 : MonoBehaviour
         
     }
 
-    // State Determination
+    //Get health status of ai
     string GetHealthStatus()
     {
-        if (health <= intenseThreshold) return "Low";
-        else if (health <= intenseThreshold * 2) return "Medium";
-        else return "High";
+        if (health <= lowHealth) 
+            return "Low";
+        else if (health <= lowHealth * 2) 
+            return "Medium";
+        else 
+            return "High";
     }
 
-    string GetDistanceStatusBetweenPlayerAndOpponent()
+    //Get distance between player and ai
+    string GetDistanceBetweenPlayerAndAI()
     {
         float distance = Vector3.Distance(transform.position, player.position);
-        if (distance <= punchRange) return "Close";
-        else if (distance <= kickRange) return "Medium";
-        else return "Far";
+        if (distance <= punchRange) 
+            return "Close";
+        else if (distance <= kickRange) 
+            return "Medium";
+        else 
+            return "Far";
     }
 
+    //get player current action/status.
     string GetPlayerStatus()
     {
         if (playerController.isAttacking)
@@ -114,21 +130,29 @@ public class PlayerAIController2 : MonoBehaviour
             return "Idle";
     }
 
-    // Bayesian Probability Computation
-    float PunchingProbability(string health, string distance, string playerAction)
+    //give the probabilty for a punch according to distance and health
+    //if distance is close(in punching range) it will give probability according to health,
+    //else just the smallest value 0.1.
+    float PunchingProbability(string health, string distance)
     {
         if (distance == "Close")
             return health == "High" ? 0.8f : health == "Medium" ? 0.5f : 0.3f;
         return 0.1f;
     }
 
-    float KickingProbability(string health, string distance, string playerAction)
+    //gives the probability for a kick according to distance and health
+    //if distance is medium (in kicking range) it will give probabilty according to health,
+    //else just the smallest number 0.1;
+    float KickingProbability(string health, string distance)
     {
         if (distance == "Medium")
             return health == "High" ? 0.7f : health == "Medium" ? 0.4f : 0.2f;
         return 0.1f;
     }
 
+    //gives the probability for defenfing according to distance, health and if player is attacking
+    //if player is attacking then it will give probabilty according to health
+    //else just the smallest number 0.2;
     float DefendingProbability(string health, string distance, bool isPlayerAttacking)
     {
         if (isPlayerAttacking)
@@ -136,43 +160,28 @@ public class PlayerAIController2 : MonoBehaviour
         return 0.2f;
     }
 
-    float MoveForwardProbability(string health, string distance, string playerAction)
+    //gives the probability for moving forward according to distance and health
+    //if distance is far  it will give probabilty according to health,
+    //else just the smallest number 0.2;
+    float MoveForwardProbability(string health, string distance)
     {
         if (distance == "Far")
             return health == "High" ? 0.8f : health == "Medium" ? 0.5f : 0.3f;
         return 0.2f;
     }
 
-    float MoveBackwardProbability(string health, string distance, string playerAction)
+    //gives the probability for moving backward according to distance and health
+    //if distance is close and health is low it will give max value.
+    //else just the smallest number 0.2;
+    float MoveBackwardProbability(string health, string distance)
     {
         if (health == "Low" && distance == "Close")
             return 0.9f;
         return 0.2f;
     }
 
-    // Difficulty Adjustment
-    void AdjustAccordingToDifficulty(ref float punch, ref float kick, ref float defend, ref float moveForward, ref float moveBackward)
-    {
-        switch (difficulty)
-        {
-            case Difficulty.Easy:
-                reactionTime = 1.0f;
-                reactionprobability = 0.75f;
-                break;
-
-            case Difficulty.Medium:
-                reactionprobability = 0.5f;
-                reactionTime = 0.5f;
-                break;
-
-            case Difficulty.Hard:
-                reactionprobability = 0.2f;
-                reactionTime = 0.2f;
-                break;
-        }
-    }
-
-    // AI Actions
+   
+    //Animations Functions
     public void MoveForward()
     {
         animator.SetTrigger("MoveForward");
@@ -204,6 +213,17 @@ public class PlayerAIController2 : MonoBehaviour
         StartCoroutine(StopDefending());
     }
 
+    public void Win()
+    {
+        animator.SetTrigger("Win");
+    }
+
+    public void Lose()
+    {
+        animator.SetTrigger("Lose");
+    }
+
+    //bool resetting coroutines
     private IEnumerator StopAttacking()
     {
         yield return new WaitForSeconds(0.25f);
@@ -216,16 +236,7 @@ public class PlayerAIController2 : MonoBehaviour
         isDefending = false;
     }
 
-    public void Win()
-    {
-        animator.SetTrigger("Win");
-    }
-
-    public void Lose()
-    {
-        animator.SetTrigger("Lose");
-    }
-
+    //Collision detection
     public void CollisionDetected(GameObject collision)
     {
         if (collision.gameObject.tag == "Player")
@@ -242,6 +253,5 @@ public class PlayerAIController2 : MonoBehaviour
                 }
             }
         }
-        //Debug.Log("collision: " + collision.name);
     }
 }

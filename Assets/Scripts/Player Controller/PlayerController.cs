@@ -3,37 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+//Script which controlls the player
 public class PlayerController : MonoBehaviour
 {
-    [HideInInspector] public bool isMoveForward = false, isMoveBackward = false, isKicking = false, isPunching = false, isDefending = false;
+    //variables
+    [HideInInspector] public bool isMoveForward = false, isMoveBackward = false, isKicking = false, isPunching = false, isDefending = false, isAttacking = false;
 
+    //Cache variables
     private Animator animator;
    
     [SerializeField] private Text playerName;
     [SerializeField] private Slider healthSlider;
     [HideInInspector] public int health = 100;
 
-    [HideInInspector] public bool isAttacking;
+    //Helper script
     [SerializeField] private PlayerAIController opponentController;
     [SerializeField] private PlayerAIController2 opponentController2;
     [SerializeField] private PlayerMultiplayerController playerMultiplayerController;
     [SerializeField] private SinglePlayerGameManager gameManager;
     private void Awake()
     {
+        //Getting and saving reference
         animator = GetComponent<Animator>();
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
+    
 
     // Update is called once per frame
     void Update()
     {
+        //Handle Input and actions accordingly.
         HandleInput();
         HandleAnimation();
     }
 
+    //Function for handling keyboard inputs.
     void HandleInput()
     {
         if (Input.GetKey(KeyCode.W))
@@ -80,6 +83,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //Functions for handling animations according to inputs.
     void HandleAnimation()
     {
         if (isMoveForward)
@@ -108,6 +112,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //Animation funtions
     public void MoveForward()
     {
         animator.SetTrigger("MoveForward");
@@ -145,7 +150,7 @@ public class PlayerController : MonoBehaviour
         gameManager.GameEnded("Lose");
     }
 
-
+    //Collision Detection
     public void CollisionDetected(GameObject collision)
     {
         if (collision.gameObject.tag == "Opponent")
@@ -168,6 +173,6 @@ public class PlayerController : MonoBehaviour
             }
 
         }
-        //Debug.Log(collision.gameObject.name + " : " + health);
+       
     }
 }

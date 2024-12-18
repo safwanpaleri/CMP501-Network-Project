@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Script used for detecting collision between player and opponent(AI/Multiplayer)
 public class ChildCollisionDetection : MonoBehaviour
 {
-
+    //Cache Variables.
     [SerializeField] private PlayerAIController parent;
     [SerializeField] private PlayerAIController2 parent1;
     [SerializeField] private PlayerController parent2;
@@ -12,6 +13,8 @@ public class ChildCollisionDetection : MonoBehaviour
     [SerializeField] private PlayerMultiplayerController parent3;
 
     bool sendOnce = false;
+
+    //OnCollision detected
     private void OnCollisionEnter(Collision collision)
     {
         if (!sendOnce)
@@ -20,10 +23,10 @@ public class ChildCollisionDetection : MonoBehaviour
         //Debug.LogWarning("Collision 0");
     }
 
+    //Send the collision to the parent object and that too only once.
     private IEnumerator SendCollision(GameObject collidedObject)
     {
         sendOnce = true;
-        //Debug.LogWarning("collided 2");
         if (parent != null && parent.isActiveAndEnabled)
         {
             parent.CollisionDetected(collidedObject);
@@ -43,7 +46,6 @@ public class ChildCollisionDetection : MonoBehaviour
         if (parent4 != null && parent4.isActiveAndEnabled)
         {
             parent4.CollisionDetected(collidedObject);
-            //Debug.LogWarning("collided 2");
         }
         yield return new WaitForSeconds(1.0f);
         sendOnce = false;
