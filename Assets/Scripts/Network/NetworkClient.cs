@@ -223,6 +223,7 @@ public class NetworkClient : MonoBehaviour
             else
             {
                 Debug.LogError("Not connected to Server");
+                multiplayerGameManager.GameEnded("Draw");
             }
         }
         catch (Exception e)
@@ -239,7 +240,7 @@ public class NetworkClient : MonoBehaviour
         {
             //Sends only important data through TCP Protocol and then verifies and do accordingl.
             yield return new WaitForSeconds(1f);
-            if (playerController != null)
+            if (playerController != null && !multiplayerGameManager.isGameEnded)
             {
                 //Initializing data struct and adding information
                 //converting the struct into a string and then 

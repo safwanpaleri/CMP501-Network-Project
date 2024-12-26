@@ -134,7 +134,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &101228876
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5649,7 +5649,7 @@ MonoBehaviour:
   health: 100
   punchRange: 1
   kickRange: 1.25
-  intenseThreshold: 30
+  lowHealth: 30
   difficulty: 1
   isAttacking: 0
 --- !u!114 &95000013349379791
@@ -5672,8 +5672,7 @@ MonoBehaviour:
   health: 100
   punchRange: 1
   kickRange: 1
-  lowHealthThreshold: 30
-  moveSpeed: 2
+  lowHealth: 30
   difficulty: 1
 --- !u!95 &95000013521468095
 Animator:
@@ -5714,10 +5713,10 @@ MonoBehaviour:
   isKicking: 0
   isPunching: 0
   isDefending: 0
+  isAttacking: 0
   playerName: {fileID: 1336619635}
   healthSlider: {fileID: 2123534981}
   health: 100
-  isAttacking: 0
   opponentController: {fileID: 95000013349379791}
   opponentController2: {fileID: 95000013349379790}
   playerMultiplayerController: {fileID: 0}

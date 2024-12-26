@@ -2690,14 +2690,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MobileControls: {fileID: 101228875}
   timerText: {fileID: 2022354371}
-  playerController: {fileID: 95000013521468096}
-  multiplayerController: {fileID: 95000013349379789}
-  playerAiController: {fileID: 95000013349379790}
   winCanvas: {fileID: 4268833223841023114}
   loseCanvas: {fileID: 145508549920419980}
   drawCanvas: {fileID: 444327902770542611}
   exitCanvas: {fileID: 779262641}
   isGameEnded: 0
+  playerController: {fileID: 95000013521468096}
+  multiplayerController: {fileID: 95000013349379789}
+  playerAiController: {fileID: 95000013349379790}
+  client: {fileID: 0}
+  server: {fileID: 0}
 --- !u!1 &1704377787
 GameObject:
   m_ObjectHideFlags: 0
@@ -5641,7 +5643,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000013954578894}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 458852d0140cdb54086391f095cc767a, type: 3}
   m_Name: 
@@ -5654,8 +5656,7 @@ MonoBehaviour:
   health: 100
   punchRange: 1
   kickRange: 1.25
-  lowHealthThreshold: 30
-  moveSpeed: 2
+  lowHealth: 30
   difficulty: 0
 --- !u!95 &95000013521468095
 Animator:
@@ -5696,10 +5697,10 @@ MonoBehaviour:
   isKicking: 0
   isPunching: 0
   isDefending: 0
+  isAttacking: 0
   playerName: {fileID: 1336619635}
   healthSlider: {fileID: 2123534981}
   health: 100
-  isAttacking: 0
   playerMultiplayerController: {fileID: 95000013349379789}
   gameManager: {fileID: 1693371825}
 --- !u!1 &100031046894631952

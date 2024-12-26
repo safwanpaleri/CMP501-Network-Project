@@ -50,7 +50,7 @@ public class PlayerAIController : MonoBehaviour
         //getting references and saving to cache variables.
         animator = GetComponent<Animator>();
         playerController = player.GetComponent<PlayerController2>();
-        //StartCoroutine(Reaction());
+        StartCoroutine(Reaction());
     }
 
     void Update()
@@ -73,7 +73,7 @@ public class PlayerAIController : MonoBehaviour
         healthLow = LowHealthCheck(health);
         healthHigh = HighHealthCheck(health);
 
-
+        #region Rules
         //Rule 1: if player is close and ai has low health, then punch.
         punchDecision = CheckMin(distanceClose, 1 - healthLow);
         //Rule2: if player is not in punch range but in kick range and ai in low health, then kick.
@@ -84,7 +84,9 @@ public class PlayerAIController : MonoBehaviour
         moveForwardDecision = CheckMin(distanceFar, healthHigh);
         //Rule 5: if player is close and ai has low health, then move backward.
         moveBackwardDecision = CheckMin(distanceClose, healthLow);
+        #endregion
 
+        #region Action Selection
         //probabilty is a difficulty parameter, if the mode is easy less liketly to take decision.,
         //if the mode is hard, then more likely to take decision.
         //if player is attacking, then defend according to difficulty
@@ -125,6 +127,7 @@ public class PlayerAIController : MonoBehaviour
             if (rand > probabilty)
                 MoveBackward();
         }
+        #endregion
 
         //reaction time is also a difficulty paramater.
         //it is the gap between an action to next. 
@@ -174,6 +177,9 @@ public class PlayerAIController : MonoBehaviour
     //if attacking returns 1, else 0
     float PlayerIsAttacking()
     {
+        if(playerController == null)
+            playerController = player.GetComponent<PlayerController2>();
+
         return playerController.isAttacking ? 1.0f : 0.0f;
     }
 

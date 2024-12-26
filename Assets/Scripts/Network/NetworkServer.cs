@@ -294,7 +294,15 @@ public class NetworkServer : MonoBehaviour
                         if (bytesRead > 0)
                         {
                             string receivedMessage = System.Text.Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                            //When data is lagged some times recieves 2 messages together as a single message
+                            //filetering just to make changes according to latest data.
+                            if (receivedMessage.Contains("}{"))
+                            {
+                                var messages = receivedMessage.Split("}{");
+                                receivedMessage = messages[0] + "}";
+                            }
                             MessageData messageData;
+                            //Debug.LogError(receivedMessage);
                             messageData = JsonUtility.FromJson<MessageData>(receivedMessage);
                             playerMultiplayerController.VerficationAndActions(messageData.playerPosition, messageData.heatlth);
                             //resetting Message timer

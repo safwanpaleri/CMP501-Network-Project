@@ -12,10 +12,10 @@ public class MenuManager : MonoBehaviour
     //where player can play with an AI Bot
     public void SelectSinglePlayerFuzzyLogic()
     {
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(3);
     }
     public void SelectSinglePlayerBayesianNetwork()
     {
-        SceneManager.LoadScene(3);
+        SceneManager.LoadScene(2);
     }
 }
