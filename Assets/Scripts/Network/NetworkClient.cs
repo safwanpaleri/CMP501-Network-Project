@@ -34,10 +34,7 @@ public class NetworkClient : MonoBehaviour
     [HideInInspector] public MultiplayerGameManager multiplayerGameManager;
 
     [Header("UI")]
-    [SerializeField] private GameObject clientUI;
-    [SerializeField] private GameObject JoinUI;
     [SerializeField] private InputField ServerIp;
-    [SerializeField] private InputField messageField;
 
     float TDPMessageTimer = 0;
     float UDPMessageTimer = 0;
@@ -78,7 +75,7 @@ public class NetworkClient : MonoBehaviour
             tcpClient = new TcpClient();
             Debug.Log("Connecting to server at " + firebaseManager.ipaddress + " : " + port);
             await tcpClient.ConnectAsync(firebaseManager.ipaddress, port);
-            Debug.Log("Connected to server at " + firebaseManager.ipaddress);
+            Debug.Log("Connected to server at " + ServerIp.text);
             //stream = tcpClient.GetStream();
             isConnected = true;
 
@@ -289,7 +286,6 @@ public class NetworkClient : MonoBehaviour
                         //TDP message timer resets,
                         //used for checking packet log and latency.
                         TDPMessageTimer = 0;
-                        Debug.LogWarning("tdp rec:" + TDPMessageTimer);
                     }
                     else
                     {

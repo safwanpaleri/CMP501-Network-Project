@@ -59,6 +59,7 @@ public class NetworkServer : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+
     }
     //Function for creating TCP server.
     //creates a unique room code which is passed to DNS along with its server address.
@@ -127,6 +128,7 @@ public class NetworkServer : MonoBehaviour
             else
             {
                 Debug.LogError("client is not connected");
+                multiplayerGameManager.GameEnded("Draw");
             }
         }
         catch (Exception e)
