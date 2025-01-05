@@ -31,16 +31,16 @@ public class FirebaseManager : MonoBehaviour
     private IEnumerator SendData_Coroutine(string ip, string roomcode)
     {
         
-        string requestUrl = firebaseUrl + "DNS/" + roomcode + ".json";  // Construct the path to your data (e.g., DNS/roomcode)
+        string requestUrl = firebaseUrl + "DNS/" + roomcode + ".json";
 
         // Create a JSON string to send
         string jsonData = "{\"ip\": \"" + ip + "\"}";
 
         // Use UnityWebRequest to send data to Firebase
-        UnityWebRequest request = new UnityWebRequest(requestUrl, UnityWebRequest.kHttpVerbPUT);  // PUT for overwriting data
-        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);  // Convert string to byte array
-        request.uploadHandler = new UploadHandlerRaw(bodyRaw);  // Attach data to request
-        request.downloadHandler = new DownloadHandlerBuffer();  // Set download handler (not used here, but required)
+        UnityWebRequest request = new UnityWebRequest(requestUrl, UnityWebRequest.kHttpVerbPUT);
+        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
 
         // Send request and wait for response
         yield return request.SendWebRequest();
@@ -66,7 +66,7 @@ public class FirebaseManager : MonoBehaviour
     //Coroutine function of fetching data from firebase
     private IEnumerator GetData_Coroutine(string roomcode)
     {
-        string requestUrl = firebaseUrl + "DNS/" + roomcode + ".json";  // Construct the path to your data
+        string requestUrl = firebaseUrl + "DNS/" + roomcode + ".json"; 
 
         // Send GET request
         UnityWebRequest request = UnityWebRequest.Get(requestUrl);
